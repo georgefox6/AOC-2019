@@ -33,9 +33,6 @@ public class Day6P2 {
             }
         }
 
-
-//        System.out.println(map.containsKey("SAN"));
-        
         //Create the santa trail to the top
         ArrayList<String> santaTrail = new ArrayList<>();
         String santa = map.get("SAN");
@@ -56,20 +53,9 @@ public class Day6P2 {
             you = map.get(you);
         }
 
-//        System.out.println("santa 0: " + santaTrail.get(0));
-//        System.out.println("santa 1: " + santaTrail.get(1));
-//        System.out.println("santa 2: " + santaTrail.get(2));
-//        System.out.println("santa 3: " + santaTrail.get(3));
-//        System.out.println("You 0: " + youTrail.get(0));
-//        System.out.println("You 1: " + youTrail.get(1));
-//        System.out.println("You 2: " + youTrail.get(2));
-//        System.out.println("You 3: " + youTrail.get(3));
-
-
         //compare the trails - find where they touch
         for(int i=0; i<santaTrail.size(); i++){
             for(int j=0; j<youTrail.size() - 1; j++){
-        //        System.out.println("youTrail: " + youTrail.get(j) + " SantaTrail: " + santaTrail.get(i));
                 if(youTrail.get(j).equals(santaTrail.get(i))){
                     System.out.println("I: " + i + "J: " + j);
                 }
