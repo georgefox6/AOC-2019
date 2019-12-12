@@ -7,6 +7,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Day10 {
+    public static int asteroidsInView(ArrayList<Point> asteroidCoordinates, Point targetAsteroid){
+        int asteroidsInView = 0;
+        ArrayList<Double> gradients = new ArrayList<>();
+        for(Point asteroid : asteroidCoordinates){
+            //Gradient between asteroid and target asteroid (Add to ArrayList gradients
+            double gradient = ((targetAsteroid.getX() - asteroid.getX())/(targetAsteroid.getY() - asteroid.getY()));
+            gradients.add(gradient);
+        }
+        return asteroidsInView;
+    }
 
     public static void main(String[] args) throws IOException {
         //read the file in
@@ -36,6 +46,11 @@ public class Day10 {
             }
             y++;
         }
+
+        //Find the gradient of every asteroid compared to the target asteroid (Need to take negatives into account)
+        //From the list of gradients, count the number of unique gradients
+        //Find the asteroid with the highest unique gradients
+
 
         //Count how many other asteroids can be seen by each asteroid
         for(Point asteroids : asteroidCoordinates){
