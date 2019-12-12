@@ -8,7 +8,7 @@ import java.util.Collections;
 
 public class Day8 {
 
-    public static int countX(int value, ArrayList<Integer> layer){
+    private static int countX(int value, ArrayList<Integer> layer){
         int counter = 0;
         for(int num : layer){
             if(num == value){
@@ -24,16 +24,16 @@ public class Day8 {
         final int NUM_IN_LAYER = PIXEL_WIDTH * PIXEL_HEIGHT;
 
         //read the file in
-        BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\Georg\\IdeaProjects\\AOC-2019\\src\\Day_8\\input.txt"));
+        BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\gfox\\Java Projects\\AOC-2019\\src\\Day_8\\input.txt"));
         String input = reader.readLine();
 
         //Store all of the layers in an ArrayList
         ArrayList<ArrayList<Integer>> layers = new ArrayList<>();
 
-        for(int i=1; i <= input.length()/NUM_IN_LAYER; i++){
+        for(int y=0; y < input.length()/NUM_IN_LAYER; y++){
             ArrayList<Integer> layer = new ArrayList<>();
-            for(int j=0; j < NUM_IN_LAYER; j++){
-                layer.add((int)input.charAt(i*j) - 48);
+            for(int x=0; x < NUM_IN_LAYER; x++){
+                layer.add((int)input.charAt((y * NUM_IN_LAYER) + x) - 48);
             }
             layers.add(layer);
         }
@@ -47,24 +47,9 @@ public class Day8 {
         //Find the layer with the least number of zeroes
         int minZeroes = Collections.min(numOfZeroes);
         //Find the index of the layer with the most zeroes
-        int index = numOfZeroes.indexOf(minZeroes);
+        int index = numOfZeroes.lastIndexOf(minZeroes);
 
         //Count the number of 1's and 2's of the layer with the least zeroes
         System.out.println("Final answer: " + countX(1,layers.get(index)) * countX(2, layers.get(index)));
-
-        /* DEBUGGING */
-
-        System.out.println("Some Random Number: " + layers.get(0).get(0));
-        System.out.println("num of zeroes: " + numOfZeroes.get(1));
-        System.out.println("Min Zeroes: " + minZeroes);
-        System.out.println("Index: " + index);
-
-        //zeroes in each layer
-        for(int num : numOfZeroes){
-            System.out.println(num);
-        }
-        System.out.println(layers.get(1));
-
-        /* END OF DEBUGGING */
     }
 }
