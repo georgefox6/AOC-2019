@@ -25,7 +25,7 @@ public class Day10 {
 
     public static void main(String[] args) throws IOException {
         //read the file in
-        BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\gfox\\Java Projects\\AOC-2019\\src\\Day_10\\input.txt"));
+        BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\gfox\\Java Projects\\AOC-2019\\src\\Day_10\\input2.txt"));
         String input;
 
         //Store the asteroid map in an array list

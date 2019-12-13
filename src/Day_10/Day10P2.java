@@ -20,7 +20,7 @@ public class Day10P2 {
 
     public static void main(String[] args) throws IOException {
         //read the file in
-        BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\gfox\\Java Projects\\AOC-2019\\src\\Day_10\\input.txt"));
+        BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\gfox\\Java Projects\\AOC-2019\\src\\Day_10\\input2.txt"));
         String input;
 
         //Store the asteroid map in an array list
@@ -49,7 +49,8 @@ public class Day10P2 {
         }
 
         //Stores a list of all of the angles of the asteroids
-        ArrayList<Double> angles = anglesOfAsteroids(asteroidCoordinates, asteroidCoordinates.get(281));
+//        ArrayList<Double> angles = anglesOfAsteroids(asteroidCoordinates, asteroidCoordinates.get(281));
+        ArrayList<Double> angles = anglesOfAsteroids(asteroidCoordinates, asteroidCoordinates.get(205));
 
         //Turn all of the negative angles into positive angels
         int i=0;
@@ -69,7 +70,8 @@ public class Day10P2 {
         Collections.sort(uniqueAnglesList);
 
         //This is the angle of the 200th asteroid
-        double winningAngle = uniqueAnglesList.get(199);
+//        double winningAngle = uniqueAnglesList.get(199);
+        double winningAngle = uniqueAnglesList.get(20);
         System.out.println(uniqueAnglesList);
         System.out.println(winningAngle);
 
@@ -78,8 +80,6 @@ public class Day10P2 {
 
         //Print out the coordinates of the asteroid at index of winning asteroid
         System.out.println(asteroidCoordinates.get(indexOfWinningAsteroid));
-
-
 
 
     }
