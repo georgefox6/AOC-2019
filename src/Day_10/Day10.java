@@ -5,17 +5,22 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Day10 {
     public static int asteroidsInView(ArrayList<Point> asteroidCoordinates, Point targetAsteroid){
-        int asteroidsInView = 0;
         ArrayList<Double> gradients = new ArrayList<>();
         for(Point asteroid : asteroidCoordinates){
-            //Gradient between asteroid and target asteroid (Add to ArrayList gradients
-            double gradient = ((targetAsteroid.getX() - asteroid.getX())/(targetAsteroid.getY() - asteroid.getY()));
-            gradients.add(gradient);
+            //Gradient between asteroid and target asteroid (Add to ArrayList gradients)
+            double angle = Math.toDegrees(Math.atan2(targetAsteroid.getX() - asteroid.getX(), targetAsteroid.getY() - asteroid.getY()));
+            gradients.add(angle);
+            //Put the array list in a set to remove any duplicate gradients
         }
-        return asteroidsInView;
+        Set<Double> uniqueGradients = new HashSet<>(gradients);
+
+        return uniqueGradients.size();
     }
 
     public static void main(String[] args) throws IOException {
@@ -38,6 +43,7 @@ public class Day10 {
         int y = 0;
         ArrayList<Point> asteroidCoordinates = new ArrayList<>();
         for(ArrayList<Character> lines : asteroidMap){
+            x = 0;
             for(char character : lines){
                 if(character == '#'){
                     asteroidCoordinates.add(new Point(x,y));
@@ -47,14 +53,13 @@ public class Day10 {
             y++;
         }
 
-        //Find the gradient of every asteroid compared to the target asteroid (Need to take negatives into account)
-        //From the list of gradients, count the number of unique gradients
-        //Find the asteroid with the highest unique gradients
-
-
+        ArrayList<Integer> asteroidsInView = new ArrayList<>();
         //Count how many other asteroids can be seen by each asteroid
         for(Point asteroids : asteroidCoordinates){
-            
+            asteroidsInView.add(asteroidsInView(asteroidCoordinates, asteroids));
         }
+
+        System.out.println("Winner : " + Collections.max(asteroidsInView));
+        System.out.println(asteroidsInView.indexOf(Collections.max(asteroidsInView)));
     }
 }
