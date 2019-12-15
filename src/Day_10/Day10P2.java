@@ -10,8 +10,10 @@ public class Day10P2 {
     public static ArrayList<Double> anglesOfAsteroids(ArrayList<Point> asteroidCoordinates, Point targetAsteroid){
         ArrayList<Double> angles = new ArrayList<>();
         for(Point asteroid : asteroidCoordinates){
-            //Gradient between asteroid and target asteroid (Add to ArrayList gradients)
-            double angle = Math.toDegrees(Math.atan2(targetAsteroid.getX() - asteroid.getX(), targetAsteroid.getY() - asteroid.getY()));
+            //angle between asteroid and target asteroid (Add to ArrayList gradients)
+            double deltaX = asteroid.getX() - targetAsteroid.getX();
+            double deltaY = asteroid.getY() - targetAsteroid.getY();
+            double angle = Math.toDegrees(Math.atan2(deltaX , deltaY));
             angles.add(angle);
             //Put the array list in a set to remove any duplicate gradients
         }
@@ -20,7 +22,7 @@ public class Day10P2 {
 
     public static void main(String[] args) throws IOException {
         //read the file in
-        BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\gfox\\Java Projects\\AOC-2019\\src\\Day_10\\input2.txt"));
+        BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\Georg\\IdeaProjects\\AOC-2019\\src\\Day_10\\input.txt"));
         String input;
 
         //Store the asteroid map in an array list
@@ -41,37 +43,46 @@ public class Day10P2 {
             x = 0;
             for(char character : lines){
                 if(character == '#'){
-                    asteroidCoordinates.add(new Point(x,y));
+                    asteroidCoordinates.add(new Point(x,41-y));
                 }
                 x++;
             }
             y++;
         }
 
-        //Stores a list of all of the angles of the asteroids
-//        ArrayList<Double> angles = anglesOfAsteroids(asteroidCoordinates, asteroidCoordinates.get(281));
-        ArrayList<Double> angles = anglesOfAsteroids(asteroidCoordinates, asteroidCoordinates.get(205));
+        ArrayList<Double> unsortedAngles = anglesOfAsteroids(asteroidCoordinates, asteroidCoordinates.get(281));
+        //Stores a list of the unsorted angles so that we can search indexOf on it
+//        ArrayList<Double> unsortedAngles = anglesOfAsteroids(asteroidCoordinates, asteroidCoordinates.get(205));
+        System.out.println("Target Asteroid: " + asteroidCoordinates.get(205));
+        System.out.println("Angles: " + unsortedAngles);
+        System.out.println("Asteroids cood 1:" + asteroidCoordinates.get(0));
+        System.out.println("Asteroids cood 2:" + asteroidCoordinates.get(1));
+        System.out.println("Asteroids cood 3:" + asteroidCoordinates.get(2));
+        System.out.println("Asteroids cood 4:" + asteroidCoordinates.get(3));
+        System.out.println("Asteroids cood 5:" + asteroidCoordinates.get(4));
+        System.out.println("Asteroids cood 6:" + asteroidCoordinates.get(5));
+        System.out.println("Asteroids cood 7:" + asteroidCoordinates.get(6));
+
 
         //Turn all of the negative angles into positive angels
         int i=0;
-        for(double angle : angles){
+        for(double angle : unsortedAngles){
             if(angle < 0.0){
-                angles.set(i, angle + 360.00);
+                unsortedAngles.set(i, angle + 360.00);
             }
             i++;
         }
 
-        //Stores a list of the unsorted angles so that we can search indexOf on it
-        ArrayList<Double> unsortedAngles = new ArrayList<>(angles);
-
         //gets list of unique ordered angles so that we find out how many asteroids are destroyed on the first pass when eliminated in the correct order
-        Set<Double> uniqueAngles = new HashSet<>(angles);
+        Set<Double> uniqueAngles = new HashSet<>(unsortedAngles);
         ArrayList<Double> uniqueAnglesList = new ArrayList<>(uniqueAngles);
         Collections.sort(uniqueAnglesList);
+        System.out.println("How many asteroids destroyed on first pass: " + uniqueAnglesList.size());
 
         //This is the angle of the 200th asteroid
 //        double winningAngle = uniqueAnglesList.get(199);
-        double winningAngle = uniqueAnglesList.get(20);
+//        double winningAngle = uniqueAnglesList.get(200);
+        double winningAngle = uniqueAnglesList.get(199);
         System.out.println(uniqueAnglesList);
         System.out.println(winningAngle);
 
