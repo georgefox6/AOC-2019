@@ -25,7 +25,7 @@ public class Day10 {
 
     public static void main(String[] args) throws IOException {
         //read the file in
-        BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\Georg\\IdeaProjects\\AOC-2019\\src\\Day_10\\input2.txt"));
+        BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\gfox\\Java Projects\\AOC-2019\\src\\Day_10\\input.txt"));
         String input;
 
         //Store the asteroid map in an array list
@@ -61,6 +61,6 @@ public class Day10 {
 
         System.out.println("Winner : " + Collections.max(asteroidsInView));
         System.out.println(asteroidsInView.indexOf(Collections.max(asteroidsInView)));
-        System.out.println(asteroidCoordinates.get(205));
+        System.out.println(asteroidCoordinates.get(281));
     }
 }
