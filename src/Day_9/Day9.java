@@ -29,7 +29,7 @@ public class Day9 {
                 num = inputArray[Math.toIntExact(inputArray[i])];
                 break;
             case "1":
-                num = inputArray[i+1];
+                num = inputArray[i];
                 break;
             case "2":
                 num = inputArray[Math.toIntExact(inputArray[i] + relativeBase)];
@@ -75,23 +75,25 @@ public class Day9 {
             parameterMode[0] = strArray[i].substring(2,3);
             parameterMode[1] = strArray[i].substring(1,2);
             parameterMode[2] = strArray[i].substring(0,1);
-            if(!parameterMode[2].equals("0")){
-                System.out.println("OOPS");
-            }
             switch(opcode){
                 case "01":
                     num1 = modeCalc(parameterMode[0],inputArray,i+1,relativeBase);
                     num2 = modeCalc(parameterMode[1],inputArray,i+2,relativeBase);
-//                    System.out.println("Num1: " + num1 + " | Num2: " + num2);
-//                    System.out.println("inputArray[i+3] : " + inputArray[i+3]);
-//                    System.out.println("i: " + i);
-                    inputArray[Math.toIntExact(inputArray[i+3])] = num1 + num2;
+                    if(parameterMode[2].equals("0")){
+                        inputArray[Math.toIntExact(inputArray[i+3])] = num1 + num2;
+                    } else {
+                        inputArray[Math.toIntExact(inputArray[i+3] + relativeBase)] = num1 + num2;
+                    }
                     increment = getIncrement(inputArray[i]);
                     break;
                 case "02":
                     num1 = modeCalc(parameterMode[0],inputArray,i+1,relativeBase);
                     num2 = modeCalc(parameterMode[1],inputArray,i+2,relativeBase);
-                    inputArray[Math.toIntExact(inputArray[i+3])] = num1 * num2;
+                    if(parameterMode[2].equals("0")){
+                        inputArray[Math.toIntExact(inputArray[i+3])] = num1 * num2;
+                    } else{
+                        inputArray[Math.toIntExact(inputArray[i+3] + relativeBase)] = num1 * num2;
+                    }
                     increment = getIncrement(inputArray[i]);
                     break;
                 case "03":
@@ -136,9 +138,18 @@ public class Day9 {
                     num1 = modeCalc(parameterMode[0],inputArray,i+1,relativeBase);
                     num2 = modeCalc(parameterMode[1],inputArray,i+2,relativeBase);
                     if(num1 < num2){
-                        inputArray[Math.toIntExact(inputArray[i+3])] = 1L;
+                        if(parameterMode[2].equals("0")){
+                            inputArray[Math.toIntExact(inputArray[i+3])] = 1L;
+                        } else {
+                            inputArray[Math.toIntExact(inputArray[i+3] + relativeBase)] = 1L;
+                        }
                     } else {
-                        inputArray[Math.toIntExact(inputArray[i+3])] = 0L;
+                        if(parameterMode[2].equals("0")){
+                            inputArray[Math.toIntExact(inputArray[i+3])] = 0L;
+                        } else {
+                            inputArray[Math.toIntExact(inputArray[i+3] + relativeBase)] = 0L;
+                        }
+
                     }
                     increment = getIncrement(inputArray[i]);
                     break;
@@ -146,9 +157,17 @@ public class Day9 {
                     num1 = modeCalc(parameterMode[0],inputArray,i+1,relativeBase);
                     num2 = modeCalc(parameterMode[1],inputArray,i+2,relativeBase);
                     if(num1 == num2){
-                        inputArray[Math.toIntExact(inputArray[i+3])] = 1L;
+                        if(parameterMode[2].equals("0")){
+                            inputArray[Math.toIntExact(inputArray[i+3])] = 1L;
+                        } else {
+                            inputArray[Math.toIntExact(inputArray[i+3] + relativeBase)] = 1L;
+                        }
                     } else{
-                        inputArray[Math.toIntExact(inputArray[i+3])] = 0L;
+                        if(parameterMode[2].equals("0")){
+                            inputArray[Math.toIntExact(inputArray[i+3])] = 0L;
+                        } else {
+                            inputArray[Math.toIntExact(inputArray[i+3] + relativeBase)] = 0L;
+                        }
                     }
                     increment = getIncrement(inputArray[i]);
                     break;
