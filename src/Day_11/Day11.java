@@ -3,9 +3,7 @@ import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.*;
 
 public class Day11 {
 
@@ -44,7 +42,7 @@ public class Day11 {
 
     public static void main(String[] args) throws IOException {
         //read the file in
-        BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\Georg\\IdeaProjects\\AOC-2019\\src\\Day_11\\input.txt"));
+        BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\gfox\\Java Projects\\AOC-2019\\src\\Day_11\\input.txt"));
         String input = reader.readLine();
         //Split up the string into an array of integers
         String[] strArray = input.split(",");
@@ -55,18 +53,18 @@ public class Day11 {
             inputArray[i] = Long.parseLong(strArray[i]);
         }
 
-        Long[][] map = new Long[100][100];
+        Long[][] map = new Long[10][10];
         for(Long[] row : map){
             Arrays.fill(row, 0L);
         }
-        int pointerX = 50;
-        int pointerY = 50;
+        int pointerX = 5;
+        int pointerY = 5;
         int oddEven = 0;
         ArrayList<Point> changedPoints = new ArrayList<>();
         String currentDirection = "Up";
 
-        //Creates the scanner to read user input
-        Scanner scanner = new Scanner(System.in);
+        //Creates queue of instructions
+        Deque<Integer> instructions = new LinkedList<>();
 
         //Sets the relative base to 0
         int relativeBase =0;
@@ -124,60 +122,61 @@ public class Day11 {
                         inputArray[i+1] = map[pointerX][pointerY];
                         increment = getIncrement(inputArray[i]);
                     }
-
                     break;
                 case "04":
                     Long output = modeCalc(parameterMode[0],inputArray,i+1,relativeBase);
-                    System.out.println("Output: " + output);
+                    System.out.println("i: " + i);
+//                    System.out.println("inputArray[i]: " + inputArray[i] + " | inputArray[i+1]: " + inputArray[i+1]);
+                    //If the input is the paint colour input
                     if((oddEven % 2) == 0){
+                        changedPoints.add(new Point(pointerX,pointerY));
                         if(output != map[pointerX][pointerY]){
                             map[pointerX][pointerY] = output;
-                            changedPoints.add(new Point(pointerX,pointerY));
+//                            changedPoints.add(new Point(pointerX,pointerY));
                         }
+                    //else this is the change direction input
                     }else{
                         if(output == 0){
                             switch(currentDirection){
                                 case "Up":
                                     currentDirection = "Left";
-                                    pointerY--;
+                                    pointerX--;
                                     break;
                                 case "Right":
                                     currentDirection = "Up";
-                                    pointerX++;
+                                    pointerY++;
                                     break;
                                 case "Down":
                                     currentDirection = "Right";
-                                    pointerY++;
+                                    pointerX++;
                                     break;
                                 case "Left":
                                     currentDirection = "Down";
-                                    pointerX--;
+                                    pointerY--;
                                     break;
                             }
                         } else if(output == 1){
                             switch(currentDirection){
                                 case "Up":
                                     currentDirection = "Right";
-                                    pointerY++;
+                                    pointerX++;
                                     break;
                                 case "Right":
                                     currentDirection = "Down";
-                                    pointerX--;
+                                    pointerY--;
                                     break;
                                 case "Down":
                                     currentDirection = "Left";
-                                    pointerY--;
+                                    pointerX--;
                                     break;
                                 case "Left":
                                     currentDirection = "Up";
-                                    pointerX++;
+                                    pointerY++;
                                     break;
                             }
                         }
                     }
-
-
-
+                    System.out.println("DO WE EVER GET HERE?");
                     oddEven++;
                     increment = getIncrement(inputArray[i]);
                     break;
@@ -261,7 +260,10 @@ public class Day11 {
             for(Long pos : row){
                 System.out.print(pos);
             }
-            System.out.println("");
+            System.out.println();
         }
+
+        Set<Point> uniquePoints = new HashSet<>(changedPoints);
+        System.out.println(uniquePoints.size());
     }
 }
