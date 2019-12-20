@@ -5,256 +5,200 @@ import java.util.Deque;
 import java.util.LinkedList;
 
 public class Intcode {
-    String[] memory;
-    String position1;
-    String position2;
-    Long relativeBase;
-    String[] parameterMode;
-    Deque<Long>  outputInstructions;
-    Long increment;
-    String opcode;
+    public Long[] memory;
+    public Long position1;
+    public Long position2;
+    public Long position1Index;
+    public Long position2Index;
+    public Long position3Index;
+    public Long relativeBase;
+    public String[] parameterMode;
+    public Deque<Long> outputInstructions;
+    public Deque<Long> inputInstructions;
+    public Long increment;
+    public String opcode;
+    public int i;
+    public boolean finished;
+    public boolean waitingForInput;
 
-    Intcode(String inputMemory){
-        this.memory = new String[10000];
-        Arrays.fill(memory,0);
-        this.memory = inputMemory.split(",");
-        this.position1 = "";
-        this.position2 = "";
+    public Intcode(String inputMemory) {
+        this.memory = new Long[100000];
+        Arrays.fill(memory, 0L);
+        String[] tempMemory = inputMemory.split(",");
+        int g = 0;
+        for (String instructions : tempMemory) {
+            memory[g] = Long.parseLong(instructions);
+            g++;
+        }
+        this.position1 = 0L;
+        this.position2 = 0L;
+        this.position1Index = 0L;
+        this.position2Index = 0L;
+        this.position3Index = 0L;
         this.relativeBase = 0L;
         this.parameterMode = new String[3];
         this.outputInstructions = new LinkedList<>();
+        this.inputInstructions = new LinkedList<>();
         this.opcode = "";
+        this.increment = 0L;
+        this.i = 0;
+        this.finished = false;
+        this.waitingForInput = false;
     }
 
-    public void updateIncrement(){
-//        Long opcode = input%10;
-        if(this.opcode.equals("01") || this.opcode.equals("02") || this.opcode.equals("07") || this.opcode.equals("08")){
+    public void updateIncrement() {
+        if (this.opcode.equals("01") || this.opcode.equals("02") || this.opcode.equals("07") || this.opcode.equals("08")) {
             this.increment = 4L;
-        } else if(this.opcode.equals("03") || this.opcode.equals("04") || this.opcode.equals("09")){
+        } else if (this.opcode.equals("03") || this.opcode.equals("04") || this.opcode.equals("09")) {
             this.increment = 2L;
-        } else if(this.opcode.equals("05") || this.opcode.equals("06")){
+        } else if (this.opcode.equals("05") || this.opcode.equals("06")) {
             this.increment = 3L;
-        } else{
+        } else {
             this.increment = 10000L;
         }
     }
 
-    public void updateParameterMode(String memoryAtI){
-        parameterMode[0] = memoryAtI.substring(2,3);
-        parameterMode[1] = memoryAtI.substring(1,2);
-        parameterMode[2] = memoryAtI.substring(0,1);
+    public void updateParameterMode(String memoryAtI) {
+        parameterMode[0] = memoryAtI.substring(2, 3);
+        parameterMode[1] = memoryAtI.substring(1, 2);
+        parameterMode[2] = memoryAtI.substring(0, 1);
     }
 
-    public void updatePositions(int i){
-        switch(parameterMode[0]){
+    public void updatePositions(int i) {
+        switch (parameterMode[0]) {
             case "0":
-                this.position1 = memory[Integer.parseInt(memory[i+1])];
+                this.position1 = memory[memory[i + 1].intValue()];
+                this.position1Index = memory[i + 1];
                 break;
             case "1":
-                this.position1 = memory[i+1];
+                this.position1 = memory[i + 1];
+                this.position1Index = (long)(i + 1);
                 break;
             case "2":
-                this.position1 = memory[Integer.parseInt(memory[i+1] + relativeBase)];
+                this.position1 = memory[memory[i + 1].intValue() + relativeBase.intValue()];
+                this.position1Index = memory[i + 1] + relativeBase;
                 break;
         }
-        switch(parameterMode[1]){
+        switch (parameterMode[1]) {
             case "0":
-                this.position2 = memory[Integer.parseInt(memory[i+2])];
+                this.position2 = memory[memory[i + 2].intValue()];
+                this.position2Index = memory[i + 2];
                 break;
             case "1":
-                this.position2 = memory[i+2];
+                this.position2 = memory[i + 2];
+                this.position2Index = (long)(i + 2);
                 break;
             case "2":
-                this.position2 = memory[Integer.parseInt(memory[i+2] + relativeBase)];
+                this.position2 = memory[memory[i + 2].intValue() + relativeBase.intValue()];
+                this.position2Index = memory[i + 2] + relativeBase;
                 break;
         }
-    }
+        switch (parameterMode[2]) {
+            //position mode
+            case "0":
+                this.position3Index = memory[i + 3];
+                break;
+            //immediate mode
+            case "1":
+                this.position3Index = (long)i;
+                break;
+            //Relative mode
+            case "2":
+                this.position3Index = memory[i + 3] + relativeBase;
 
-    public String addStrings(String str1, String str2){
-        return Integer.toString(Integer.parseInt(str1) + Integer.parseInt(str2));
-    }
-
-    public void run(){
-        for(int i=0; i < memory.length; i += increment) {
-
-            //Format the memory to include leading zeroes
-            memory[i] = String.format("%05d", memory[i]);
-
-            //gets the opcode from the last 2 characters of the memory
-            this.opcode = memory[i].substring(3);
-
-            //Stores the parameter modes
-            updateParameterMode(memory[i]);
-
-            //Calculate the values of position1 and position 2 based on the parameter modes
-            updatePositions(i);
-
-            switch(opcode){
-                case "01":
-                    //if position mode
-                    if(parameterMode[2].equals("0")){
-                        memory[Integer.parseInt(memory[i+3])] = addStrings(position1, position2);
-                    //if relative mode
-                    } else {
-                        memory[Integer.parseInt(memory[i+3] + relativeBase)] = addStrings(position1, position2);
-                    }
-                    updateIncrement();
-                    break;
-
-                case "02":
-                    //if position mode
-                    if(parameterMode[2].equals("0")){
-                        memory[Integer.parseInt(memory[i+3])] = num1 * num2;
-                    //if relative mode
-                    } else{
-                        memory[Integer.parseInt(memory[i+3] + relativeBase)] = num1 * num2;
-                    }
-                    updateIncrement();
-                    break;
-                case "03":
-                    System.out.println("Took " + map[pointerX][pointerY] + " as input");
-                    if(parameterMode[0].equals("2")){
-                        inputArray[Math.toIntExact(inputArray[i+1] + relativeBase)] = map[pointerX][pointerY];
-                        increment = getIncrement(inputArray[i]);
-                    } else if(parameterMode[0].equals("1")) {
-                        inputArray[Math.toIntExact(inputArray[i+1])] = map[pointerX][pointerY];
-                        increment = getIncrement(inputArray[i]);
-                    } else {
-                        inputArray[i+1] = map[pointerX][pointerY];
-                        increment = getIncrement(inputArray[i]);
-                    }
-                    break;
-                case "04":
-                    Long output = modeCalc(parameterMode[0],inputArray,i+1,relativeBase);
-                    System.out.println("i: " + i);
-//                    System.out.println("inputArray[i]: " + inputArray[i] + " | inputArray[i+1]: " + inputArray[i+1]);
-                    //If the input is the paint colour input
-                    if((oddEven % 2) == 0){
-                        changedPoints.add(new Point(pointerX,pointerY));
-                        if(output != map[pointerX][pointerY]){
-                            map[pointerX][pointerY] = output;
-//                            changedPoints.add(new Point(pointerX,pointerY));
-                        }
-                        //else this is the change direction input
-                    }else{
-                        if(output == 0){
-                            switch(currentDirection){
-                                case "Up":
-                                    currentDirection = "Left";
-                                    pointerX--;
-                                    break;
-                                case "Right":
-                                    currentDirection = "Up";
-                                    pointerY++;
-                                    break;
-                                case "Down":
-                                    currentDirection = "Right";
-                                    pointerX++;
-                                    break;
-                                case "Left":
-                                    currentDirection = "Down";
-                                    pointerY--;
-                                    break;
-                            }
-                        } else if(output == 1){
-                            switch(currentDirection){
-                                case "Up":
-                                    currentDirection = "Right";
-                                    pointerX++;
-                                    break;
-                                case "Right":
-                                    currentDirection = "Down";
-                                    pointerY--;
-                                    break;
-                                case "Down":
-                                    currentDirection = "Left";
-                                    pointerX--;
-                                    break;
-                                case "Left":
-                                    currentDirection = "Up";
-                                    pointerY++;
-                                    break;
-                            }
-                        }
-                    }
-                    System.out.println("DO WE EVER GET HERE?");
-                    oddEven++;
-                    increment = getIncrement(inputArray[i]);
-                    break;
-                case "05":
-                    num1 = modeCalc(parameterMode[0],inputArray,i+1,relativeBase);
-                    num2 = modeCalc(parameterMode[1],inputArray,i+2,relativeBase);
-                    if(num1 != 0){
-                        i = Math.toIntExact(num2);
-                        increment = 0L;
-                    } else {
-                        increment = getIncrement(inputArray[i]);
-                    }
-                    break;
-                case "06":
-                    num1 = modeCalc(parameterMode[0],inputArray,i+1,relativeBase);
-                    num2 = modeCalc(parameterMode[1],inputArray,i+2,relativeBase);
-                    if(num1 == 0){
-                        i = Math.toIntExact(num2);
-                        increment = 0L;
-                    } else{
-                        increment = getIncrement(inputArray[i]);
-                    }
-                    break;
-                case "07":
-                    num1 = modeCalc(parameterMode[0],inputArray,i+1,relativeBase);
-                    num2 = modeCalc(parameterMode[1],inputArray,i+2,relativeBase);
-                    if(num1 < num2){
-                        if(parameterMode[2].equals("0")){
-                            inputArray[Math.toIntExact(inputArray[i+3])] = 1L;
-                        } else {
-                            inputArray[Math.toIntExact(inputArray[i+3] + relativeBase)] = 1L;
-                        }
-                    } else {
-                        if(parameterMode[2].equals("0")){
-                            inputArray[Math.toIntExact(inputArray[i+3])] = 0L;
-                        } else {
-                            inputArray[Math.toIntExact(inputArray[i+3] + relativeBase)] = 0L;
-                        }
-
-                    }
-                    increment = getIncrement(inputArray[i]);
-                    break;
-                case "08":
-                    num1 = modeCalc(parameterMode[0],inputArray,i+1,relativeBase);
-                    num2 = modeCalc(parameterMode[1],inputArray,i+2,relativeBase);
-                    if(num1 == num2){
-                        if(parameterMode[2].equals("0")){
-                            inputArray[Math.toIntExact(inputArray[i+3])] = 1L;
-                        } else {
-                            inputArray[Math.toIntExact(inputArray[i+3] + relativeBase)] = 1L;
-                        }
-                    } else{
-                        if(parameterMode[2].equals("0")){
-                            inputArray[Math.toIntExact(inputArray[i+3])] = 0L;
-                        } else {
-                            inputArray[Math.toIntExact(inputArray[i+3] + relativeBase)] = 0L;
-                        }
-                    }
-                    increment = getIncrement(inputArray[i]);
-                    break;
-                case "09":
-                    num1 = modeCalc(parameterMode[0],inputArray,i+1,relativeBase);
-                    relativeBase += num1;
-                    increment = getIncrement(inputArray[i]);
-                    break;
-                case "99":
-                    System.out.println("99!");
-                    i = inputArray.length;
-                    break;
-                default:
-                    System.out.println("opcode: " + opcode);
-                    i = inputArray.length;
-                    System.out.println("Case : not 1, 2, 3, 4, 5, 6, 7, 8 or 99");
-                    break;
-            }
-        }
         }
     }
 
+    public void nextStep() {
+        //Format the memory to include leading zeroes
+        String fullOpcode = String.format("%05d", memory[i]);
+
+        //gets the opcode from the last 2 characters of the memory
+        this.opcode = fullOpcode.substring(3);
+
+        //Stores the parameter modes
+        updateParameterMode(fullOpcode);
+
+        //Calculate the values of position1 and position 2 based on the parameter modes
+        updatePositions(i);
+
+        //reset the increment back to 0
+        increment = 0L;
+        switch (opcode) {
+            case "01":
+                memory[position3Index.intValue()] = position1 + position2;
+                updateIncrement();
+                break;
+
+            case "02":
+                memory[position3Index.intValue()] = position1 * position2;
+                updateIncrement();
+                break;
+
+            case "03":
+                if (inputInstructions.size() < 1) {
+                    System.out.println("Awaiting input...");
+                    waitingForInput = true;
+
+                } else {
+                    waitingForInput = false;
+                    memory[position1Index.intValue()] = inputInstructions.removeFirst();
+                    updateIncrement();
+                }
+                break;
+
+            case "04":
+                System.out.println("Output: " + position1);
+                outputInstructions.addLast(position1);
+                updateIncrement();
+                break;
+
+            case "05":
+                if (position1 != 0L) {
+                    i = position2.intValue();
+                } else {
+                    updateIncrement();
+                }
+                break;
+
+            case "06":
+                if (position1 == 0L) {
+                    i = position2.intValue();
+                } else {
+                    updateIncrement();
+                }
+                break;
+
+            case "07":
+                if (position1 < position2) {
+                    memory[position3Index.intValue()] = 1L;
+                } else {
+                    memory[position3Index.intValue()] = 0L;
+                }
+                updateIncrement();
+                break;
+
+            case "08":
+                if (position1 == position2) {
+                    memory[position3Index.intValue()] = 1L;
+                } else {
+                    memory[position3Index.intValue()] = 0L;
+                }
+                updateIncrement();
+                break;
+
+            case "09":
+                relativeBase += position1;
+                updateIncrement();
+                break;
+
+            case "99":
+                System.out.println("99!");
+                this.finished = true;
+                break;
+            default:
+                System.out.println("Bad: " + memory[i]);
+        }
+        i += increment;
+    }
 }
