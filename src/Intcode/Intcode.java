@@ -46,7 +46,7 @@ public class Intcode {
         this.waitingForInput = false;
     }
 
-    public void updateIncrement() {
+    private void updateIncrement() {
         if (this.opcode.equals("01") || this.opcode.equals("02") || this.opcode.equals("07") || this.opcode.equals("08")) {
             this.increment = 4L;
         } else if (this.opcode.equals("03") || this.opcode.equals("04") || this.opcode.equals("09")) {
@@ -58,13 +58,13 @@ public class Intcode {
         }
     }
 
-    public void updateParameterMode(String memoryAtI) {
+    private void updateParameterMode(String memoryAtI) {
         parameterMode[0] = memoryAtI.substring(2, 3);
         parameterMode[1] = memoryAtI.substring(1, 2);
         parameterMode[2] = memoryAtI.substring(0, 1);
     }
 
-    public void updatePositions(int i) {
+    private void updatePositions(int i) {
         switch (parameterMode[0]) {
             case "0":
                 this.position1 = memory[memory[i + 1].intValue()];
